@@ -1,6 +1,6 @@
 # ArduinoStreamCommander
-The ArduinoStreamCommander is a library for interacting with an Arduino over any [https://www.arduino.cc/reference/en/language/functions/communication/stream/](Stream)-based interface via commands, as long as the member functions `setTimeout, available, println, readString, flush` are implemented accordingly.
-Those interfaces include [https://www.arduino.cc/reference/en/language/functions/communication/serial](Serial) (for which this library was initially meant for), [https://www.arduino.cc/en/Reference/softwareSerial](SoftwareSerial), [https://www.arduino.cc/en/Reference/Wire](Wire) and [https://www.arduino.cc/en/Reference/Ethernet](Ethernet).
+The ArduinoStreamCommander is a library for interacting with an Arduino over any [Stream](https://www.arduino.cc/reference/en/language/functions/communication/stream/)-based interface via commands, as long as the member functions `setTimeout, available, println, readString, flush` are implemented accordingly.
+Those interfaces include [Serial](https://www.arduino.cc/reference/en/language/functions/communication/serial) (for which this library was initially meant for), [SoftwareSerial](https://www.arduino.cc/en/Reference/softwareSerial), [Wire](https://www.arduino.cc/en/Reference/Wire) and [Ethernet](https://www.arduino.cc/en/Reference/Ethernet).
 
 The target was a very lightweight and convenient library, which allows to easily add new commands and send status updates automatically in case the data changed.
 
@@ -16,8 +16,8 @@ Features:
 * `src`  contains the source code.
 * `examples` contains an example sketch.
 # Installing and using ArduinoStreamCommander with the Arduino IDE
-* Before usage, installing [https://github.com/je-s/ArduinoStreamCommander-MessageTypes](ArduinoStreamCommander-MessageTypes) is required. This Lib just contains standard message types, but can be easily extended and customised if required.
-* To install the library either clone and ZIP the folder, or download one of the releases. After that follow the instructions [https://www.arduino.cc/en/Guide/Libraries#toc2](here).
+* Before usage, installing [ArduinoStreamCommander-MessageTypes](https://github.com/je-s/ArduinoStreamCommander-MessageTypes) is required. This Lib just contains standard message types, but can be easily extended and customised if required.
+* To install the library either clone and ZIP the folder, or download one of the releases. After that follow the instructions [here](https://www.arduino.cc/en/Guide/Libraries#toc2).
 * In order to use ArduinoStreamCommander, `<StreamCommander.hpp>` needs to be included.
 # Usage
 For more detailed explainations on the particular functions/functionalities, please reference to the comments in the source code.
@@ -122,7 +122,7 @@ Type and content could be extracted with the following regular expression, using
 * content: (?<=:).*$
 The message type is always the part **before** the first occurence of the delimiter, while the content is usually the part **after** the first occurence of the delimiter until the end of the message.
 ## Standard Message Types
-The StreamCommander uses several standard message types, which are defined in [https://github.com/je-s/ArduinoStreamCommander-MessageTypes](ArduinoStreamCommander-MessageTypes).
+The StreamCommander uses several standard message types, which are defined in [ArduinoStreamCommander-MessageTypes](https://github.com/je-s/ArduinoStreamCommander-MessageTypes).
 | Type | Purpose |
 | -----| ------- |
 | response | Return responses after a command has been executed |
