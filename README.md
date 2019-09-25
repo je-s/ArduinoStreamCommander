@@ -44,6 +44,7 @@ Also there's an example ("test") which showcases the core functionalities of the
 ## Arguments
 A command can be followed by arguments. Those arguments are separated from the rest of the command by the first occurence of the command delimiter (a blank space by default).
 The delimiter can be changed with the function `setCommandDelimiter( char delimiter );` or in the `init`-function.
+The arguments are parsed as a single string, which can then be processed arbitrarily.
 
 Example:
 * Command with arguments: `test 1 2 3`
