@@ -90,6 +90,7 @@ void cmdDefault( String command, String arguments, StreamCommander * instance )
 ```
 ## Standard Commands
 The StreamCommander has several standard commands which implement basic functionalities. Adding those commands can be surpressed by specifing this when calling the `init`-function.
+
 | Command | Purpose | Arguments |
 | --------| --------| --------- |
 | activate | Activates the automatic publishing of new status-messages | |
@@ -106,6 +107,7 @@ To make the communication more easy and consistent, a simple message format has 
 
 Format:
 **type&lt;delimiter&gt;content**
+
 | Component | Meaning |
 | --------- | ------- |
 | type | Contains the type of the message |
@@ -124,6 +126,7 @@ Type and content could be extracted with the following regular expression, using
 The message type is always the part **before** the first occurence of the delimiter, while the content is usually the part **after** the first occurence of the delimiter until the end of the message.
 ## Standard Message Types
 The StreamCommander uses several standard message types, which are defined in [ArduinoStreamCommander-MessageTypes](https://github.com/je-s/ArduinoStreamCommander-MessageTypes).
+
 | Type | Purpose |
 | -----| ------- |
 | response | Return responses after a command has been executed |
