@@ -123,6 +123,7 @@ Example:
 Type and content could be extracted with the following regular expression, using the default delimiter `.`:
 * type: ^[^:]*
 * content: (?<=:).*$
+
 The message type is always the part **before** the first occurence of the delimiter, while the content is usually the part **after** the first occurence of the delimiter until the end of the message.
 ## Standard Message Types
 The StreamCommander uses several standard message types, which are defined in [ArduinoStreamCommander-MessageTypes](https://github.com/je-s/ArduinoStreamCommander-MessageTypes).
