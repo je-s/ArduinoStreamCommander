@@ -1,0 +1,44 @@
+# Syntax Coloring Map For StreamCommander
+
+# Datatypes (KEYWORD1)
+StreamCommander KEYWORD1
+CommandCallbackFunction KEYWORD1
+DefaultCallbackFunction KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+init KEYWORD2
+setActive KEYWORD2
+isActive KEYWORD2
+setCommandDelimiter KEYWORD2
+getCommandDelimiter KEYWORD2
+setMessageDelimiter KEYWORD2
+getMessageDelimiter KEYWORD2
+setEchoCommands KEYWORD2
+shouldEchoCommands KEYWORD2
+setStreamBufferTimeout KEYWORD2
+getStreamBufferTimeout KEYWORD2
+setId KEYWORD2
+getId KEYWORD2
+updateStatus KEYWORD2
+getStatus KEYWORD2
+addCommand KEYWORD2
+getNumCommands KEYWORD2
+getCommandList KEYWORD2
+setDefaultCallback KEYWORD2
+getDefaultCallback KEYWORD2
+fetchCommand KEYWORD2
+sendMessage KEYWORD2
+sendResponse KEYWORD2
+sendInfo KEYWORD2
+sendError KEYWORD2
+sendStatus KEYWORD2
+sendId KEYWORD2
+sendIsActive KEYWORD2
+sendEcho KEYWORD2
+sendCommands KEYWORD2
+
+# Instances (KEYWORD2)
+# none
+
+# Constants (LITERAL1)
+# none
