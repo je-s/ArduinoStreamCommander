@@ -34,7 +34,7 @@ Also there's an example ("test") which showcases the core functionalities of the
     1. The callback function has to follow following typedef: `typedef void (*DefaultCallbackFunction)( String command , String arguments , StreamCommander * instance )`.
 6. Call `commander.fetchCommand()` in every `loop()`. This function catches incoming commands. If the command has been registered and found, the according callback will be called, and (optional) arguments will be parsed and passed to the according callback function. If the command has not been registered, the default callback will be called.
     1. This function can also be called after an hardware interrupt.
-    2. **Carriage return ("\r"), Newline ("\n") and Carriage return + Newline ("\r\n") do each signalise the end of a command.**
+    2. **Carriage return ("\r"), Newline ("\n") or Carriage return + Newline ("\r\n") do each signalise the end of a command.**
 7. Send status updates with `updateStatus`-function.
     1. If the status has changed since the last update, a new status message will automatically be sent.
     2. If the device is not activated, possible status updates won't be sent out. They can still be queried manually with the `status`-command.
