@@ -21,18 +21,24 @@ Features:
 * In order to use ArduinoStreamCommander, `<StreamCommander.hpp>` needs to be included.
 # Usage
 For more detailed explainations on the particular functions/functionalities, please reference to the comments in the source code.
-Also there's an example ("test") which showcases the core functionalities of the StreamCommander.
+Also, there's an example ([examples/test/test.ino](examples/test/test.ino)) which showcases the core functionalities of the StreamCommander.
 ## Basic usage
-1. Instantiate a new `ArduinoStreamCommander`-Object: `StreamCommander commander = StreamCommander();`. The StreamCommander will be initialised with the standard `Serial`-Object by default.
-    1. Optionally, instantiate the StreamCommander with an alternative `Stream`-based interface: `StreamCommander commander = StreamCommander( &Serial1 );`.
-2. Initialise the Stream-interface, e.g.: `Serial.begin( 9600 );`.
+1. Instantiate a new `ArduinoStreamCommander`-Object: `StreamCommander commander = StreamCommander();`.  
+The StreamCommander will be initialised with the standard `Serial`-Object by default.
+    1. Optionally, instantiate the StreamCommander with an alternative `Stream`-based interface:  
+    `StreamCommander commander = StreamCommander( &Serial1 );`
+2. Initialise the Stream-interface, e.g.: `Serial.begin( 9600 );`
 3. Initialise the StreamCommander: `commander.init();`. (Optionally with arguments, see source code for more information.)
     1. Call further optional functions while setting up.
-4. Add custom commands with a name and a matching callback function, e.g.: `commander.addCommand( "test", testCallback );`.
-    1. The callback function has to follow following typedef: `typedef void (*CommandCallbackFunction)( String arguments , StreamCommander * instance )`.
-5. (Optionally, set a default callback function, e.g.: `commander.setDefaultCallback( defaultCallback );`.
-    1. The callback function has to follow following typedef: `typedef void (*DefaultCallbackFunction)( String command , String arguments , StreamCommander * instance )`.
-6. Call `commander.fetchCommand()` in every `loop()`. This function catches incoming commands. If the command has been registered and found, the according callback will be called, and (optional) arguments will be parsed and passed to the according callback function. If the command has not been registered, the default callback will be called.
+4. Add custom commands with a name and a matching callback function, e.g.:  
+`commander.addCommand( "test", testCallback );`
+    1. The callback function has to follow following typedef:  
+    `typedef void (*CommandCallbackFunction)( String arguments , StreamCommander * instance )`.
+5. Optionally, set a default callback function, e.g.:  
+`commander.setDefaultCallback( defaultCallback );`
+    1. The callback function has to follow following typedef:  
+    `typedef void (*DefaultCallbackFunction)( String command , String arguments , StreamCommander * instance )`
+6. Call `commander.fetchCommand();` in every `loop()`. This function catches incoming commands. If the command has been registered and found, the according callback will be called, and (optional) arguments will be parsed and passed to the according callback function. If the command has not been registered, the default callback will be called.
     1. This function can also be called after an hardware interrupt.
     2. **Carriage return ("\r"), Newline ("\n") or Carriage return + Newline ("\r\n") do each signalise the end of a command.**
 7. Send status updates with `updateStatus`-function.
@@ -43,7 +49,7 @@ Also there's an example ("test") which showcases the core functionalities of the
     2. The ID will only be updated in the EEPROM if it really changes, which extends the lifespan of the EEPROM.
 ## Arguments
 A command can be followed by arguments. Those arguments are separated from the rest of the command by the first occurence of the command delimiter (a blank space by default).
-The delimiter can be changed with the function `setCommandDelimiter( char delimiter );` or in the `init`-function.
+The delimiter can be changed with the function `commander.setCommandDelimiter( char delimiter );` or in the `init`-function.
 The arguments are parsed as a single string, which can then be processed arbitrarily.
 
 Example:
@@ -51,7 +57,9 @@ Example:
 * Command: `test`
 * Arguments: `1 2 3`
 ## Defining Command-Callbacks
-As stated above, a callback for commands follows the `CommandCallbackFunction`-typedef: `typedef void (*CommandCallbackFunction)( String arguments , StreamCommander * instance )`; it has two parameters: a string of arguments, and a pointer to the instance of the StreamCommander calling the callback.
+As stated above, a callback for commands follows the `CommandCallbackFunction`-typedef:  
+`typedef void (*CommandCallbackFunction)( String arguments , StreamCommander * instance )`  
+It has two parameters: a string of arguments, and a pointer to the instance of the StreamCommander calling the callback.
 
 The latter parameter is especially there, in case multiple instances of stream commander are running (for example if we have multiple serial ports connected), in order to distinguish which instance called the callback.
 
@@ -76,9 +84,10 @@ void cmdLed( String arguments, StreamCommander * instance )
 }
 ```
 ## Defining the Default-Callbacks
-This function gets called if an unknown/unregistered command has been delivered to the StreamCommander. As stated above, the default callback follows the `DefaultCallbackFunction`-typedef: `typedef void (*DefaultCallbackFunction)( String command , String arguments , StreamCommander * instance )`.
+This function gets called if an unknown/unregistered command has been delivered to the StreamCommander. As stated above, the default callback follows the `DefaultCallbackFunction`-typedef:  
+`typedef void (*DefaultCallbackFunction)( String command , String arguments , StreamCommander * instance )`
 
-In addition to the `CommandCallbackFunction` it has a parameter `command` which contains the name of the command which has been tried to be invoked.
+In addition to the `CommandCallbackFunction` it has the parameter `command` which contains the name of the command that has been tried to be invoked.
 
 Example:
 ```
