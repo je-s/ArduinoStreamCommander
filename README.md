@@ -66,7 +66,7 @@ The latter parameter is especially there, in case multiple instances of stream c
 If arguments have been passed with the command, the arguments are parsed and passed as a single string.
 
 Example for turning the built in LED on and off:
-```
+```C++
 commander.addCommand( "led", cmdLed );
 ...
 void cmdLed( String arguments, StreamCommander * instance )
@@ -90,7 +90,7 @@ This function gets called if an unknown/unregistered command has been delivered 
 In addition to the `CommandCallbackFunction` it has the parameter `command` which contains the name of the command that has been tried to be invoked.
 
 Example:
-```
+```C++
 commander.setDefaultCallback( cmdDefault );
 ...
 void cmdDefault( String command, String arguments, StreamCommander * instance )
