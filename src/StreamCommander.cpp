@@ -44,7 +44,7 @@ void StreamCommander::init( bool active, char commandDelimiter, char messageDeli
 
     setDefaultCallback( defaultCommand );
 
-    sendInfo( "Device with ID " + getId() + " is ready." );
+    sendInfo( "Device with ID '" + getId() + "' is ready." );
 }
 
 void StreamCommander::setStreamInstance( Stream * streamInstance )
@@ -160,14 +160,14 @@ void StreamCommander::setId( String id )
     // Check for Errors
     if ( id.length() > ID_MAX_LENGTH )
     {
-        sendError( "ID \"" + id + "\" too long (ID_MAX_LENGTH = " + String( ID_MAX_LENGTH ) + ")." );
+        sendError( "ID '" + id + "' too long (ID_MAX_LENGTH = " + String( ID_MAX_LENGTH ) + ")." );
 
         return;
     }
 
     if ( id.equals( getId() ) )
     {
-        sendResponse( "ID is already \"" + id + "\"." );
+        sendResponse( "ID is already '" + id + "'." );
 
         return;
     }
@@ -248,7 +248,7 @@ void StreamCommander::addCommand( String commandName, CommandCallbackFunction co
     }
     else
     {
-        sendInfo( "Command \"" + commandName + "\" already found. Replacing with new command." );
+        sendInfo( "Command '" + commandName + "' already found. Replacing with new command." );
     }
 
     // Set the Callback-Function
@@ -558,5 +558,5 @@ void StreamCommander::addAllStandardCommands()
 
 void StreamCommander::defaultCommand( String command, String arguments, StreamCommander * instance )
 {
-    instance->sendResponse( "Command \"" + command + "\" not registered." );
+    instance->sendResponse( "Command '" + command + "' not registered." );
 }

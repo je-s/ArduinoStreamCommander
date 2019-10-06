@@ -72,5 +72,5 @@ void cmdLed( String arguments, StreamCommander * instance )
 
 void cmdDefault( String command, String arguments, StreamCommander * instance )
 {
-    instance->sendResponse( "Command \"" + command + "\" with arguments \"" + arguments + "\" not registered." );
+    instance->sendResponse( "Command '" + command + "' with arguments '" + arguments + "' not registered." );
 }
