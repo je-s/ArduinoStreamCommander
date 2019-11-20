@@ -130,7 +130,7 @@ Example:
 * content: `ExampleError 123`
 * Whole message: `error:ExampleError 123`
 ## Interpretation of messages
-Type and content could be extracted with the following regular expression, using the default delimiter `.`:
+Type and content could be extracted with the following regular expression, using the default delimiter `:`:
 * type: ^[^:]*
 * content: (?<=:).*$
 
