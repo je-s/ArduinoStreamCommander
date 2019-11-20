@@ -148,5 +148,5 @@ The StreamCommander uses several standard message types, which are defined in [A
 | id | Contains the id of the device |
 | active | Contains whether the device is set to active or not |
 | echo | Contains an echo of the last input received |
-| commands | Contains a list of all registered of a Device |
+| commands | Contains a list of all registered commands of a Device |
 | command | Contains a command to be passed to an Arduino |
