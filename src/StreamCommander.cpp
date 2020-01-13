@@ -1,4 +1,4 @@
-/*  
+/*
     Copyright 2019 Jan-Eric Schober
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -209,7 +209,7 @@ void StreamCommander::updateStatus( String status )
     if ( !getStatus().equals( status ) )
     {
         setStatus( status );
-        
+
         // Only send a Status-Update if our device is set active
         if ( isActive() )
         {
@@ -321,20 +321,20 @@ int StreamCommander::getNumCommands()
 String StreamCommander::getCommandList()
 {
     String commandList = "";
-    String commandSeperator = ", ";
+    String commandSeparator = ", ";
 
     for ( int i = 0; i < getNumCommands(); i++ )
     {
-        commandList = commandList + *(commands[i].command) + commandSeperator;
+        commandList = commandList + *(commands[i].command) + commandSeparator;
     }
 
-    // Remove the last command seperator
+    // Remove the last command separator
     unsigned int listLength = commandList.length();
-    unsigned int seperatorLength = commandSeperator.length();
+    unsigned int separatorLength = commandSeparator.length();
 
     if ( listLength > 0 )
     {
-        commandList.remove( listLength - seperatorLength, seperatorLength );
+        commandList.remove( listLength - separatorLength, separatorLength );
     }
 
     return commandList;
@@ -411,7 +411,7 @@ void StreamCommander::fetchCommand()
     {
         arguments = commandBuffer.substring( commandEnd + 1, stringEnd );
     }
-    
+
     command = commandBuffer.substring( 0, commandEnd );
 
     // Send an Echo
@@ -522,7 +522,7 @@ void StreamCommander::commandIsActive( String arguments, StreamCommander * insta
 void StreamCommander::commandSetEcho( String arguments, StreamCommander * instance )
 {
     arguments.trim();
-    
+
     if ( arguments.equals( F("on") ) )
     {
         instance->setEchoCommands( true );
