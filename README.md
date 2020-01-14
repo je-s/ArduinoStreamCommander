@@ -113,28 +113,8 @@ The StreamCommander has several standard commands which implement basic function
 | status | Returns the current status of the device | |
 | commands | Returns all registered commands of the device | |
 # Message format
-To make the communication more easy and consistent, a simple message format has been defined, which is used by the ArduinoStreamCommander.
-
-Format:
-**type&lt;delimiter&gt;content**
-
-| Component | Meaning |
-| --------- | ------- |
-| type | Contains the type of the message |
-| &lt;delimiter&gt; | Containts the delimiter, without the angle brackets. Default is `:` |
-| conent | Contains the message body |
-
-Example:
-* type: `error`
-* delimiter: `:`
-* content: `ExampleError 123`
-* Whole message: `error:ExampleError 123`
-## Interpretation of messages
-Type and content could be extracted with the following regular expression, using the default delimiter `:`:
-* type: ^[^:]*
-* content: (?<=:).*$
-
-The message type is always the part **before** the first occurence of the delimiter, while the content is usually the part **after** the first occurence of the delimiter until the end of the message.
+To make the communication more easy and consistent, a simple message format has been defined, which is used by the ArduinoStreamCommander.\
+The definition can be found here: [SerialMessageFormat](https://github.com/je-s/SerialMessageFormat)
 ## Standard Message Types
 The StreamCommander uses several standard message types, which are defined in [ArduinoStreamCommander-MessageTypes](https://github.com/je-s/ArduinoStreamCommander-MessageTypes).
 
