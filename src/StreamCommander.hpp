@@ -1,4 +1,4 @@
-/*  
+/*
     Copyright 2019 Jan-Eric Schober
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,6 +49,7 @@ private:
     static const char COMMAND_DELIMITER = ' ';
     static const char MESSAGE_DELIMITER = ':';
     static const int ID_MAX_LENGTH = 32;
+    static const String PING_REPLY;
 
     static const String COMMAND_ACTIVATE;
     static const String COMMAND_DEACTIVATE;
@@ -79,13 +80,13 @@ private:
     Stream * getStreamInstance(); // Gets the current streamInstance of the StreamCommander.
     void setAddStandardCommands( bool addStandardCommands ); // Sets whether the standard commands should be added or not (true/false).
     bool shouldAddStandardCommands(); // Returns whether the standard commadns should be added or not.
-    void saveIdToEEPROM( String id ); // Saves and ID to the EEPROM if it differs from the old one.
-    void loadIdFromEEPROM(); // Loads the ID from the EEPROM.
+    void saveIdToEeprom( String id ); // Saves and ID to the EEPROM if it differs from the old one.
+    void loadIdFromEeprom(); // Loads the ID from the EEPROM.
     void deleteCommands(); // Deletes all registered commands.
     void setNumCommands( int numCommands ); // Sets the number of the currently registered commands.
     void incrementNumCommands(); // Increments the number of the currently registered commands.
     CommandContainer * getCommandContainer( String command ); // Gets the container containing all commands.
-    int getCommandContainerNum( String command ); // Returns the number (position) of a specific command in the command container.
+    int getCommandContainerIndex( String command ); // Returns the index (position) of a specific command in the command container by name.
 
     static void commandActivate( String arguments, StreamCommander * instance );// Definition of the command COMMAND_ACTIVATE.
     static void commandDeactivate( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_DEACTIVATE.
@@ -102,7 +103,7 @@ private:
 public:
     // Constructor
     StreamCommander( Stream * streamInstance = &Serial ); // Constructor, instance of a Stream object as argument.
-    
+
     // Destructor
     ~StreamCommander();
 
@@ -141,15 +142,15 @@ public:
     void fetchCommand(); // Fetches and interprets incoming commands, and invokes the corresponding callbacks. This should be called in the loop or after an interrupt/event.
 
     void sendMessage( String type, String content ); // Sends a message with a specific type and content separated by our delimiter.
-    void sendResponse( String response ); // Sends a message of type MessageType::RESPONSE
-    void sendInfo( String info ); // Sends a message of type MessageType::INFO
-    void sendError( String error ); // Sends a message of type MessageType::ERROR
-    void sendPing(); // Sends a message of type MessageType::PING, contains a "reply"
-    void sendStatus(); // Sends a message of type MessageType::STATUS, contains the current status
-    void sendId(); // Sends a message of type MessageType::ID, contains the current ID
-    void sendIsActive(); // Sends a message of type MessageType::ACTIVE, contains the current active status
-    void sendEcho( String echo ); // Sends a message of type MessageType::ECHO
-    void sendCommands(); // Sends a message of type MessageType::COMMANDS, contains a list of currently registered commands
+    void sendResponse( String response ); // Sends a message of type MessageType::RESPONSE.
+    void sendInfo( String info ); // Sends a message of type MessageType::INFO.
+    void sendError( String error ); // Sends a message of type MessageType::ERROR.
+    void sendPing(); // Sends a message of type MessageType::PING, contains a "reply".
+    void sendStatus(); // Sends a message of type MessageType::STATUS, contains the current status.
+    void sendId(); // Sends a message of type MessageType::ID, contains the current ID.
+    void sendIsActive(); // Sends a message of type MessageType::ACTIVE, contains the current active status.
+    void sendEcho( String echo ); // Sends a message of type MessageType::ECHO.
+    void sendCommands(); // Sends a message of type MessageType::COMMANDS, contains a list of currently registered commands.
 };
 
 #endif // STREAMCOMMANDER_HPP

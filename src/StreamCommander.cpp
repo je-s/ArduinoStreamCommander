@@ -16,14 +16,15 @@
 
 #include "StreamCommander.hpp"
 
+const String StreamCommander::PING_REPLY = "reply";
 const String StreamCommander::COMMAND_ACTIVATE = "activate";
 const String StreamCommander::COMMAND_DEACTIVATE = "deactivate";
 const String StreamCommander::COMMAND_ISACTIVE = "isactive";
-const String StreamCommander::COMMAND_SETECHO = "echo";
+const String StreamCommander::COMMAND_SETECHO = "setecho";
 const String StreamCommander::COMMAND_SETID = "setid";
 const String StreamCommander::COMMAND_GETID = "getid";
 const String StreamCommander::COMMAND_PING = "ping";
-const String StreamCommander::COMMAND_GETSTATUS = "status";
+const String StreamCommander::COMMAND_GETSTATUS = "getstatus";
 const String StreamCommander::COMMAND_LISTCOMMANDS = "commands";
 
 StreamCommander::StreamCommander( Stream * streamInstance )
@@ -38,7 +39,7 @@ StreamCommander::~StreamCommander()
 
 void StreamCommander::init( bool active, char commandDelimiter, char messageDelimiter, bool echoCommands, bool addStandardCommands, long streamBufferTimeout )
 {
-    loadIdFromEEPROM();
+    loadIdFromEeprom();
     setCommandDelimiter( commandDelimiter );
     setMessageDelimiter( messageDelimiter );
     setStreamBufferTimeout( streamBufferTimeout );
@@ -82,7 +83,8 @@ Stream * StreamCommander::getStreamInstance()
 
 void StreamCommander::setActive( bool active )
 {
-    if ( isActive() != active ) // Only set our active-status if it's differing
+    // Only set & send our active-status if it's differing
+    if ( isActive() != active )
     {
         this->active = active;
 
@@ -137,10 +139,10 @@ bool StreamCommander::shouldAddStandardCommands()
 
 void StreamCommander::setStreamBufferTimeout( long streamBufferTimeout )
 {
-    // Check for Input-Errors
+    // Check if the timeout is over or equal to 0
     if ( streamBufferTimeout < 0 )
     {
-        sendError( F("Timeout has to be >= 0.") );
+        sendError( F( "Timeout has to be >= 0." ) );
 
         return;
     }
@@ -154,7 +156,7 @@ long StreamCommander::getStreamBufferTimeout()
     return this->streamBufferTimeout;
 }
 
-void StreamCommander::saveIdToEEPROM( String id )
+void StreamCommander::saveIdToEeprom( String id )
 {
     // Since EEPROM.put can't handle strings, we have to convert it to a c_str
     char idBuffer[ID_MAX_LENGTH];
@@ -163,7 +165,7 @@ void StreamCommander::saveIdToEEPROM( String id )
     EEPROM.put( 0, idBuffer );
 }
 
-void StreamCommander::loadIdFromEEPROM()
+void StreamCommander::loadIdFromEeprom()
 {
     char id[ID_MAX_LENGTH];
     EEPROM.get( 0, id );
@@ -173,7 +175,7 @@ void StreamCommander::loadIdFromEEPROM()
 
 void StreamCommander::setId( String id )
 {
-    // Check for Errors
+    // Check if the ID is too long
     if ( id.length() > ID_MAX_LENGTH )
     {
         sendError( "ID '" + id + "' too long (ID_MAX_LENGTH = " + String( ID_MAX_LENGTH ) + ")." );
@@ -181,6 +183,8 @@ void StreamCommander::setId( String id )
         return;
     }
 
+    // Check whether the ID differs or not
+    // Only proceed with the saving-process when it differs
     if ( id.equals( getId() ) )
     {
         sendResponse( "ID is already '" + id + "'." );
@@ -188,7 +192,7 @@ void StreamCommander::setId( String id )
         return;
     }
 
-    saveIdToEEPROM( id );
+    saveIdToEeprom( id );
     this->id = id;
     sendId();
 }
@@ -210,7 +214,7 @@ void StreamCommander::updateStatus( String status )
     {
         setStatus( status );
 
-        // Only send a Status-Update if our device is set active
+        // Only send a status update if our device is set active
         if ( isActive() )
         {
             sendStatus();
@@ -225,50 +229,52 @@ String StreamCommander::getStatus()
 
 void StreamCommander::addCommand( String commandName, CommandCallbackFunction commandCallback )
 {
-    // Check for Input-Errors
+    // Check that the command name is not empty
     if ( commandName.length() == 0 )
     {
-        sendError( F("Command-Name must not be empty.") );
+        sendError( F( "Command name must not be empty." ) );
 
         return;
     }
 
+    // Check that the command callback function is not empty
     if ( commandCallback == nullptr )
     {
-        sendError( F("Command-Callbackfunction must not be empty.") );
+        sendError( F( "Command callback function must not be empty." ) );
 
         return;
     }
 
-    int currentCommandNum = getNumCommands();
-    bool commandFound = false;
-    CommandContainer * container = getCommandContainer( commandName );
+    // Sets the currentCommandIndex to -1 if this commandName has not been added yet, or to the array-index where it has been found
+    int currentCommandIndex = getCommandContainerIndex( commandName );
+    bool commandFound = true;
 
-    // Check if the command has already been added
-    if ( container != nullptr )
+    // Check if the command has already been added or not
+    // If not: sets the index to the next index where the new command will be added
+    if ( currentCommandIndex < 0 )
     {
-        commandFound = true;
-        currentCommandNum = getCommandContainerNum( commandName ); // Set the currentCommandNum to the array-position where it has been found
+        currentCommandIndex = getNumCommands();
+        commandFound = false;
     }
 
     // If the command has not been added yet, incease the array size and create a pointer to our commandName. Set the Callback in the next step.
     // If it has already been added, just replace the old callback with the new one in the next step.
-    if ( !commandFound ) 
+    if ( !commandFound )
     {
-        commands = (CommandContainer*) realloc( commands, ( currentCommandNum + 1 ) * sizeof( CommandContainer ) );
+        commands = (CommandContainer*) realloc( commands, ( currentCommandIndex + 1 ) * sizeof( CommandContainer ) );
         incrementNumCommands();
 
         // Create a pointer to our command-name. On destruction of the corresponding CommandContainer, it will get deleted.
         String * commandNamePointer = new String( commandName );
-        commands[currentCommandNum].command = commandNamePointer;
+        commands[currentCommandIndex].command = commandNamePointer;
     }
     else
     {
-        sendInfo( "Command '" + commandName + "' already found. Replacing with new command." );
+        sendInfo( "Command '" + commandName + "' already found. Replacing with new callback function." );
     }
 
     // Set the Callback-Function
-    commands[currentCommandNum].callbackFunction = commandCallback;
+    commands[currentCommandIndex].callbackFunction = commandCallback;
 }
 
 StreamCommander::CommandContainer * StreamCommander::getCommandContainer( String command )
@@ -284,7 +290,7 @@ StreamCommander::CommandContainer * StreamCommander::getCommandContainer( String
     return nullptr;
 }
 
-int StreamCommander::getCommandContainerNum( String command )
+int StreamCommander::getCommandContainerIndex( String command )
 {
     for ( int i = 0; i < getNumCommands(); i++ )
     {
@@ -328,7 +334,7 @@ String StreamCommander::getCommandList()
         commandList = commandList + *(commands[i].command) + commandSeparator;
     }
 
-    // Remove the last command separator
+    // Remove the last commandSeparator occurence
     unsigned int listLength = commandList.length();
     unsigned int separatorLength = commandSeparator.length();
 
@@ -342,10 +348,10 @@ String StreamCommander::getCommandList()
 
 void StreamCommander::setDefaultCallback( DefaultCallbackFunction defaultCallbackFunction )
 {
-    // Check for Input-Errors
+    // Check that the default callback function is not empty
     if ( defaultCallbackFunction == nullptr )
     {
-        sendError( F("Default-Callbackfunction must not be empty.") );
+        sendError( F( "Default callback function must not be empty." ) );
 
         return;
     }
@@ -390,18 +396,17 @@ void StreamCommander::fetchCommand()
     {
         stringEnd = nl;
     }
-    else // If there's no CR/NL at all or if it's the first character, return -> no valid command found
+    else // If there's no CR/NL at all, or if it's the first character, return -> no valid command found
     {
         return;
     }
 
     // Parse command from buffer
-
     int commandEnd = commandBuffer.indexOf( getCommandDelimiter() );
     String command = "";
     String arguments = "";
 
-    // If there is no command-delimiter, we can't parse any arguments
+    // If there is no command-delimiter, we can't parse any arguments (cause there probably are none)
     if ( commandEnd == -1 )
     {
         // Set commandEnd to stringEnd, since our command ends there if no arguments are given
@@ -427,28 +432,23 @@ void StreamCommander::fetchCommand()
         }
     }
 
-    bool commandFound = false;
-
-    // Try to find our Input-Command and execute it
+    // Try to find our input-command and execute it
     CommandContainer * container = getCommandContainer( command );
 
     // If a container for this command has been found, try to call the callback
     if ( container != nullptr )
     {
-        commandFound = true;
-
         if ( container->callbackFunction != nullptr )
         {
-            // Call our Callback-Function with the arguments and our object-instace
+            // Call our Callback-Function with the arguments and our object-instance
             container->callbackFunction( arguments, this );
         }
         else
         {
-            sendError( F("Command-Callbackfunction is empty.") );
+            sendError( "Command callback function for command '" + command + "' is empty." );
         }
     }
-
-    if ( !commandFound )
+    else
     {
         getDefaultCallback()( command, arguments, this );
     }
@@ -476,7 +476,7 @@ void StreamCommander::sendError( String error )
 
 void StreamCommander::sendPing()
 {
-    sendMessage( MessageType::PING, "reply" );
+    sendMessage( MessageType::PING, PING_REPLY );
 }
 
 void StreamCommander::sendStatus()
@@ -523,11 +523,11 @@ void StreamCommander::commandSetEcho( String arguments, StreamCommander * instan
 {
     arguments.trim();
 
-    if ( arguments.equals( F("on") ) )
+    if ( arguments.equals( "on" ) )
     {
         instance->setEchoCommands( true );
     }
-    else if ( arguments.equals( F("off") ) )
+    else if ( arguments.equals( "off" ) )
     {
         instance->setEchoCommands( false );
     }

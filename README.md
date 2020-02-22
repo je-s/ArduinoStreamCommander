@@ -106,11 +106,11 @@ The StreamCommander has several standard commands which implement basic function
 | activate | Activates the automatic publishing of new status-messages | |
 | deactivate | Deactivates the automatic publishing of new status-messages | |
 | isactive | Returns whether the device is set to active or not | | 
-| echo | Sets the echoing of incoming commands on or off | on / off |
+| setecho | Sets the echoing of incoming commands on or off | on / off |
 | setid | Sets the ID of the device | &lt;id&gt; |
 | getid | Returns the ID of the device | |
-| ping | Returns a "ping:response"-message | |
-| status | Returns the current status of the device | |
+| ping | Returns a ping response message (usually a "ping:reply" message) | |
+| getstatus | Returns the current status of the device | |
 | commands | Returns all registered commands of the device | |
 # Message format
 To make the communication more easy and consistent, a simple message format has been defined, which is used by the ArduinoStreamCommander.\
@@ -123,7 +123,7 @@ The StreamCommander uses several standard message types, which are defined in [A
 | response | Return responses after a command has been executed |
 | info | Inform about something like an internal event (e.g. for logging-purposes) |
 | error | Inform about an error/problem which occured during the runtime |
-| ping | Containts an ping response message |
+| ping | Contains a ping response message (usually containts "reply") |
 | status | Send the current/most recent status of the device (Especially used for status updates) |
 | id | Contains the id of the device |
 | active | Contains whether the device is set to active or not |
