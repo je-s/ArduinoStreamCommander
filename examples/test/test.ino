@@ -1,4 +1,4 @@
-/*  
+/*
     Copyright 2019 Jan-Eric Schober
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -69,13 +69,13 @@ void cmdHello( String arguments, StreamCommander * instance )
 
 void cmdPointer( String arguments, StreamCommander * instance )
 {
-    instance->sendResponse( "Pointer address is 0x" + String( (unsigned int)instance, HEX )  );
+    instance->sendResponse( "Pointer address is 0x" + String( (unsigned int)instance, HEX ) );
 }
 
 void cmdLed( String arguments, StreamCommander * instance )
 {
     arguments.trim();
-    
+
     if ( arguments.equals( "on" ) )
     {
         digitalWrite( LED_BUILTIN, HIGH );

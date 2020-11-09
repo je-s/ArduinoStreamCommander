@@ -82,17 +82,18 @@ private:
     bool shouldAddStandardCommands(); // Returns whether the standard commadns should be added or not.
     void saveIdToEeprom( String id ); // Saves and ID to the EEPROM if it differs from the old one.
     void loadIdFromEeprom(); // Loads the ID from the EEPROM.
+    CommandContainer * getCommandContainer( String command ); // Gets the container containing all commands.
+    int getCommandContainerIndex( String command ); // Returns the index (position) of a specific command in the command container by name.
     void deleteCommands(); // Deletes all registered commands.
     void setNumCommands( int numCommands ); // Sets the number of the currently registered commands.
     void incrementNumCommands(); // Increments the number of the currently registered commands.
-    CommandContainer * getCommandContainer( String command ); // Gets the container containing all commands.
-    int getCommandContainerIndex( String command ); // Returns the index (position) of a specific command in the command container by name.
+    void executeCommand( String command, String arguments ); // Tries to execute a command with given arguments. Arguments can be empty.
 
     static void commandActivate( String arguments, StreamCommander * instance );// Definition of the command COMMAND_ACTIVATE.
     static void commandDeactivate( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_DEACTIVATE.
     static void commandIsActive( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_ISACTIVE.
     static void commandSetEcho( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_SETECHO.
-    static void commandSetId(  String id, StreamCommander * instance ); // Definition of the command COMMAND_SETID.
+    static void commandSetId( String id, StreamCommander * instance ); // Definition of the command COMMAND_SETID.
     static void commandGetId( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_GETID.
     static void commandPing( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_PING.
     static void commandGetStatus( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_GETSTATUS.

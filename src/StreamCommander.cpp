@@ -364,6 +364,43 @@ StreamCommander::DefaultCallbackFunction StreamCommander::getDefaultCallback()
     return this->defaultCallbackFunction;
 }
 
+void StreamCommander::executeCommand( String command, String arguments )
+{
+    // Send an Echo
+    if ( shouldEchoCommands() )
+    {
+        if ( arguments.length() )
+        {
+            sendEcho( command + " " + arguments );
+        }
+        else
+        {
+            sendEcho( command );
+        }
+    }
+
+    // Try to find our input-command and execute it
+    CommandContainer * container = getCommandContainer( command );
+
+    // If a container for this command has been found, try to call the callback
+    if ( container != nullptr )
+    {
+        if ( container->callbackFunction != nullptr )
+        {
+            // Call our Callback-Function with the arguments and our object-instance
+            container->callbackFunction( arguments, this );
+        }
+        else
+        {
+            sendError( "Command callback function for command '" + command + "' is empty." );
+        }
+    }
+    else
+    {
+        getDefaultCallback()( command, arguments, this );
+    }
+}
+
 void StreamCommander::fetchCommand()
 {
     Stream * streamInstance = getStreamInstance();
@@ -419,39 +456,7 @@ void StreamCommander::fetchCommand()
 
     command = commandBuffer.substring( 0, commandEnd );
 
-    // Send an Echo
-    if ( shouldEchoCommands() )
-    {
-        if ( arguments.length() )
-        {
-            sendEcho( command + " " + arguments );
-        }
-        else
-        {
-            sendEcho( command );
-        }
-    }
-
-    // Try to find our input-command and execute it
-    CommandContainer * container = getCommandContainer( command );
-
-    // If a container for this command has been found, try to call the callback
-    if ( container != nullptr )
-    {
-        if ( container->callbackFunction != nullptr )
-        {
-            // Call our Callback-Function with the arguments and our object-instance
-            container->callbackFunction( arguments, this );
-        }
-        else
-        {
-            sendError( "Command callback function for command '" + command + "' is empty." );
-        }
-    }
-    else
-    {
-        getDefaultCallback()( command, arguments, this );
-    }
+    executeCommand( command, arguments );
 }
 
 void StreamCommander::sendMessage( String type, String content )
