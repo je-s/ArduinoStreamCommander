@@ -11,7 +11,7 @@ Features:
 * Send different kind of messages with a simple and lightweight message format.
     * Send status updates of the device (e.g. for pushing new sensor values via Serial Interface).
     * Send arbitrary types of messages.
-* Get/Set an ID from and to the EEPROM.
+* Get/Set an ID from and to the EEPROM (If the target board has one available).
 # Folder structure
 * `src`  contains the source code.
 * `examples` contains an example sketch.
@@ -44,7 +44,7 @@ The StreamCommander will be initialised with the standard `Serial`-Object by def
 7. Send status updates with `updateStatus`-function.
     1. If the status has changed since the last update, a new status message will automatically be sent.
     2. If the device is not activated, possible status updates won't be sent out. They can still be queried manually with the `status`-command.
-8. In case you need the device to have an ID (for example if you need to adress multiple devices separately), set an id with the `setid`-command the first time you boot the device.
+8. In case you need the device to have an ID (for example if you need to adress multiple devices separately), set an id with the `setid`-command the first time you boot the device. If an EEPROM is available on the board:
     1. The ID will be persisted in the EEPROM of the device, and will automatically be loaded on every initialisation of the StreamCommander. No need to hardcode this.
     2. The ID will only be updated in the EEPROM if it really changes, which extends the lifespan of the EEPROM.
 ## Arguments

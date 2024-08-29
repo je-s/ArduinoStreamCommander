@@ -19,8 +19,11 @@
 
 // Arduino Standard Libraries
 #include <Arduino.h>
-#include <EEPROM.h>
 #include <MessageTypes.hpp>
+
+#if __has_include("<EEPROM.h>")
+#include <EEPROM.h>
+#endif
 
 class StreamCommander
 {
@@ -76,82 +79,201 @@ private:
     int numCommands;
 
     // Private Methods
-    void setStreamInstance( Stream * streamInstance ); // Sets the streamInstance of the StreamCommander.
-    Stream * getStreamInstance(); // Gets the current streamInstance of the StreamCommander.
-    void setAddStandardCommands( bool addStandardCommands ); // Sets whether the standard commands should be added or not (true/false).
-    bool shouldAddStandardCommands(); // Returns whether the standard commadns should be added or not.
-    void saveIdToEeprom( String id ); // Saves and ID to the EEPROM if it differs from the old one.
-    void loadIdFromEeprom(); // Loads the ID from the EEPROM.
-    CommandContainer * getCommandContainer( String command ); // Gets the container containing all commands.
-    int getCommandContainerIndex( String command ); // Returns the index (position) of a specific command in the command container by name.
-    void deleteCommands(); // Deletes all registered commands.
-    void setNumCommands( int numCommands ); // Sets the number of the currently registered commands.
-    void incrementNumCommands(); // Increments the number of the currently registered commands.
-    void executeCommand( String command, String arguments ); // Tries to execute a command with given arguments. Arguments can be empty.
+    // Sets the streamInstance of the StreamCommander.
+    void setStreamInstance( Stream * streamInstance );
 
-    static void commandActivate( String arguments, StreamCommander * instance );// Definition of the command COMMAND_ACTIVATE.
-    static void commandDeactivate( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_DEACTIVATE.
-    static void commandIsActive( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_ISACTIVE.
-    static void commandSetEcho( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_SETECHO.
-    static void commandSetId( String id, StreamCommander * instance ); // Definition of the command COMMAND_SETID.
-    static void commandGetId( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_GETID.
-    static void commandPing( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_PING.
-    static void commandGetStatus( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_GETSTATUS.
-    static void commandListCommands( String arguments, StreamCommander * instance ); // Definition of the command COMMAND_LISTCOMMANDS.
-    void addAllStandardCommands(); // Registers all the above commands.
-    static void defaultCommand( String command, String arguments, StreamCommander * instance ); // Definition of the default callback.
+    // Gets the current streamInstance of the StreamCommander.
+    Stream * getStreamInstance();
+
+    // Sets whether the standard commands should be added or not (true/false).
+    void setAddStandardCommands( bool addStandardCommands );
+
+    // Returns whether the standard commadns should be added or not.
+    bool shouldAddStandardCommands();
+
+    // This functions do only get implemented in case an EEPROM is available for the Board.
+    #if __has_include("<EEPROM.h>")
+    // Saves an ID to the EEPROM if it differs from the old one.
+    void saveIdToEeprom( String id );
+
+    // Loads the ID from the EEPROM.
+    void loadIdFromEeprom();
+    #endif
+
+    // Gets the container containing all commands.
+    CommandContainer * getCommandContainer( String command );
+
+    // Returns the index (position) of a specific command in the command container by name.
+    int getCommandContainerIndex( String command );
+
+    // Deletes all registered commands.
+    void deleteCommands();
+
+    // Sets the number of the currently registered commands.
+    void setNumCommands( int numCommands );
+
+    // Increments the number of the currently registered commands.
+    void incrementNumCommands();
+
+    // Tries to execute a command with given arguments. Arguments can be empty.
+    void executeCommand( String command, String arguments );
+
+    // Definition of the command COMMAND_ACTIVATE.
+    static void commandActivate( String arguments, StreamCommander * instance );
+
+    // Definition of the command COMMAND_DEACTIVATE.
+    static void commandDeactivate( String arguments, StreamCommander * instance );
+
+    // Definition of the command COMMAND_ISACTIVE.
+    static void commandIsActive( String arguments, StreamCommander * instance );
+
+    // Definition of the command COMMAND_SETECHO.
+    static void commandSetEcho( String arguments, StreamCommander * instance );
+
+    // Definition of the command COMMAND_SETID.
+    static void commandSetId( String id, StreamCommander * instance );
+
+    // Definition of the command COMMAND_GETID.
+    static void commandGetId( String arguments, StreamCommander * instance );
+
+    // Definition of the command COMMAND_PING.
+    static void commandPing( String arguments, StreamCommander * instance );
+
+    // Definition of the command COMMAND_GETSTATUS.
+    static void commandGetStatus( String arguments, StreamCommander * instance );
+
+    // Definition of the command COMMAND_LISTCOMMANDS.
+    static void commandListCommands( String arguments, StreamCommander * instance );
+
+    // Registers all the above commands.
+    void addAllStandardCommands();
+
+    // Definition of the default callback.
+    static void defaultCommand( String command, String arguments, StreamCommander * instance );
 
 public:
     // Constructor
-    StreamCommander( Stream * streamInstance = &Serial ); // Constructor, instance of a Stream object as argument.
+    // Constructor, instance of a Stream object as argument.
+    StreamCommander( Stream * streamInstance = &Serial );
 
     // Destructor
     ~StreamCommander();
 
     // Public Methods
-    void init( // Init function for setting up the StreamCommander correctly, after it has been successfuly constructed.
-        bool active = true, // Whether the StreamCommander is set to active or not. This only influences the automatic status updates.
-        char commandDelimiter = COMMAND_DELIMITER, // Character which delimits a command from its' arguments.
-        char messageDelimiter = MESSAGE_DELIMITER, // Character which delimits a message from its' contents.
-        bool echoCommands = false, // Should commands be echoed at arrival or not?
-        bool addStandardCommands = true, // Should the standard commands be added or not?
-        long streamBufferTimeout = STREAM_BUFFER_TIMEOUT // Sets the timeout of the specific streams' buffer.
+    // Init function for setting up the StreamCommander correctly, after it has been successfuly constructed.
+    void init(
+        // Whether the StreamCommander is set to active or not. This only influences the automatic status updates.
+        bool active = true,
+
+        // Character which delimits a command from its' arguments.
+        char commandDelimiter = COMMAND_DELIMITER,
+
+        // Character which delimits a message from its' contents.
+        char messageDelimiter = MESSAGE_DELIMITER,
+
+        // Should commands be echoed at arrival or not?
+        bool echoCommands = false,
+
+        // Should the standard commands be added or not?
+        bool addStandardCommands = true,
+
+        // Sets the timeout of the specific streams' buffer.
+        long streamBufferTimeout = STREAM_BUFFER_TIMEOUT
     );
-    void setActive( bool active ); // Sets whether the automatic status updates are activated or not (true/false).
-    bool isActive(); // Returns if the automatic status updates are activated.
-    void setCommandDelimiter( char commandDelimiter ); // Sets the command delimiter, separating the command from a potential argument.
-    char getCommandDelimiter(); // Gets the command delimiter.
-    void setMessageDelimiter( char messageDelimiter ); // Sets the message delimiter, separating the type from the content.
-    char getMessageDelimiter(); // Gets the message delimiter.
-    void setEchoCommands( bool echoCommands ); // Sets whether all incoming commands should be echoed or not (true/false).
-    bool shouldEchoCommands(); // Returns if all incomming commands should be echoed.
-    void setStreamBufferTimeout( long streamBufferTimeout ); // Sets the timeout of the specific streams' buffer. 
-    long getStreamBufferTimeout(); // Returns the timeout of the specific streams' buffer.
-    void setId( String id ); // Sets the ID of the StreamCommander/Device.
-    String getId(); // Gets the ID of the StreamCommander/Device.
 
-    void updateStatus( String status ); // Update the status of the StreamCommander/Device; updates the status and sends an automatic status message only if the status changed.
-    void setStatus( String status ); // Sets the current status StreamCommander/Device.
-    String getStatus(); // Gets the current status StreamCommander/Device.
+    // Sets whether the automatic status updates are activated or not (true/false).
+    void setActive( bool active );
 
-    void addCommand( String command, CommandCallbackFunction commandCallback ); // Registers a new command; a command name tied to a command callback.
-    int getNumCommands(); // Gets the number of the registered commands.
-    String getCommandList(); // Gets a list of all registered commands.
-    void setDefaultCallback( DefaultCallbackFunction defaultCallbackFunction ); // Sets the default callback which gets called in case a sent command is not registered.
-    DefaultCallbackFunction getDefaultCallback(); // Gets the default callback.
+    // Returns if the automatic status updates are activated.
+    bool isActive();
 
-    void fetchCommand(); // Fetches and interprets incoming commands, and invokes the corresponding callbacks. This should be called in the loop or after an interrupt/event.
+    // Sets the command delimiter, separating the command from a potential argument.
+    void setCommandDelimiter( char commandDelimiter );
 
-    void sendMessage( String type, String content ); // Sends a message with a specific type and content separated by our delimiter.
-    void sendResponse( String response ); // Sends a message of type MessageType::RESPONSE.
-    void sendInfo( String info ); // Sends a message of type MessageType::INFO.
-    void sendError( String error ); // Sends a message of type MessageType::ERROR.
-    void sendPing(); // Sends a message of type MessageType::PING, contains a "reply".
-    void sendStatus(); // Sends a message of type MessageType::STATUS, contains the current status.
-    void sendId(); // Sends a message of type MessageType::ID, contains the current ID.
-    void sendIsActive(); // Sends a message of type MessageType::ACTIVE, contains the current active status.
-    void sendEcho( String echo ); // Sends a message of type MessageType::ECHO.
-    void sendCommands(); // Sends a message of type MessageType::COMMANDS, contains a list of currently registered commands.
+    // Gets the command delimiter.
+    char getCommandDelimiter();
+
+    // Sets the message delimiter, separating the type from the content.
+    void setMessageDelimiter( char messageDelimiter );
+
+    // Gets the message delimiter.
+    char getMessageDelimiter();
+
+    // Sets whether all incoming commands should be echoed or not (true/false).
+    void setEchoCommands( bool echoCommands );
+
+    // Returns if all incomming commands should be echoed.
+    bool shouldEchoCommands();
+
+    // Sets the timeout of the specific streams' buffer. 
+    void setStreamBufferTimeout( long streamBufferTimeout );
+
+    // Returns the timeout of the specific streams' buffer.
+    long getStreamBufferTimeout();
+
+    // Sets the ID of the StreamCommander/Device.
+    // The ID gets only saved to an EEPROM if one is available.
+    void setId( String id );
+
+    // Gets the ID of the StreamCommander/Device.
+    String getId();
+
+    // Update the status of the StreamCommander/Device; updates the status and sends an automatic status message only if the status changed.
+    void updateStatus( String status );
+
+    // Sets the current status StreamCommander/Device.
+    void setStatus( String status );
+
+    // Gets the current status StreamCommander/Device.
+    String getStatus();
+
+    // Registers a new command; a command name tied to a command callback.
+    void addCommand( String command, CommandCallbackFunction commandCallback );
+
+    // Gets the number of the registered commands.
+    int getNumCommands();
+
+    // Gets a list of all registered commands.
+    String getCommandList();
+
+    // Sets the default callback which gets called in case a sent command is not registered.
+    void setDefaultCallback( DefaultCallbackFunction defaultCallbackFunction );
+
+    // Gets the default callback.
+    DefaultCallbackFunction getDefaultCallback();
+
+    // Fetches and interprets incoming commands, and invokes the corresponding callbacks. This should be called in the loop or after an interrupt/event.
+    void fetchCommand();
+
+    // Sends a message with a specific type and content separated by our delimiter.
+    void sendMessage( String type, String content );
+
+    // Sends a message of type MessageType::RESPONSE.
+    void sendResponse( String response );
+
+    // Sends a message of type MessageType::INFO.
+    void sendInfo( String info );
+
+    // Sends a message of type MessageType::ERROR.
+    void sendError( String error );
+
+    // Sends a message of type MessageType::PING, contains a "reply".
+    void sendPing();
+
+    // Sends a message of type MessageType::STATUS, contains the current status.
+    void sendStatus();
+
+    // Sends a message of type MessageType::ID, contains the current ID.
+    void sendId();
+
+    // Sends a message of type MessageType::ACTIVE, contains the current active status.
+    void sendIsActive();
+
+    // Sends a message of type MessageType::ECHO.
+    void sendEcho( String echo );
+
+    // Sends a message of type MessageType::COMMANDS, contains a list of currently registered commands.
+    void sendCommands();
 };
 
 #endif // STREAMCOMMANDER_HPP

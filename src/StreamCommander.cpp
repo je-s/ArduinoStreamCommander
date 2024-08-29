@@ -39,7 +39,10 @@ StreamCommander::~StreamCommander()
 
 void StreamCommander::init( bool active, char commandDelimiter, char messageDelimiter, bool echoCommands, bool addStandardCommands, long streamBufferTimeout )
 {
+    #if __has_include("<EEPROM.h>")
     loadIdFromEeprom();
+    #endif
+
     setCommandDelimiter( commandDelimiter );
     setMessageDelimiter( messageDelimiter );
     setStreamBufferTimeout( streamBufferTimeout );
@@ -156,6 +159,7 @@ long StreamCommander::getStreamBufferTimeout()
     return this->streamBufferTimeout;
 }
 
+#if __has_include("<EEPROM.h>")
 void StreamCommander::saveIdToEeprom( String id )
 {
     // Since EEPROM.put can't handle strings, we have to convert it to a c_str
@@ -172,6 +176,7 @@ void StreamCommander::loadIdFromEeprom()
 
     setId( String( id ) );
 }
+#endif
 
 void StreamCommander::setId( String id )
 {
@@ -192,7 +197,10 @@ void StreamCommander::setId( String id )
         return;
     }
 
+    #if __has_include("<EEPROM.h>")
     saveIdToEeprom( id );
+    #endif
+
     this->id = id;
     sendId();
 }
